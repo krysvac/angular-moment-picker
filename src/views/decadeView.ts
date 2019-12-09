@@ -10,9 +10,10 @@ export default class DecadeView implements IView {
 		private $scope: IDirectiveScopeInternal,
 		private $ctrl: IModelController,
 		private provider: IProviderOptions) { }
-	
+
 	public render(): string {
-		let year = this.$scope.view.moment.clone(),
+		let localeToUse = this.$scope.locale;
+		let year = this.$scope.view.moment.locale(localeToUse).clone(),
 			firstYear = Math.floor(year.year() / 10) * 10 - 1;
 
 		this.rows = {};

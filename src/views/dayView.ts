@@ -36,7 +36,8 @@ export default class DayView implements IView {
 			hour.add(1, 'hours');
 		}
 		// return title
-		return this.$scope.view.moment.format('LL');
+		let localeToUse = this.$scope.locale;
+		return this.$scope.view.moment.locale(localeToUse).format('LL');
 	}
 
 	public set(hour: IViewItem): void {

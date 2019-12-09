@@ -43,7 +43,8 @@ export default class HourView implements IView {
 		}
 		if (this.$scope.keyboard) this.highlightClosest();
 		// return title
-		return this.$scope.view.moment.clone().startOf('hour').format('lll');
+		let localeToUse = this.$scope.locale;
+		return this.$scope.view.moment.locale(localeToUse).clone().startOf('hour').format('lll');
 	}
 
 	public set(minute: IViewItem): void {

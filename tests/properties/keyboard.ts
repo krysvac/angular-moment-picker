@@ -1,10 +1,9 @@
 import * as angular from 'angular';
 import * as moment from 'moment';
 import * as test from '../utility';
-import { IProviderOptions } from '../../src/provider';
-import { ViewString, IView } from '../../src/definitions';
-import { KEYS } from '../../src/utility';
-import * as views from '../../src/views';
+import {IProviderOptions} from '../../src/provider';
+import {ViewString} from '../../src/definitions';
+import {KEYS} from '../../src/utility';
 
 describe('Keyboard', () => {
 
@@ -20,7 +19,8 @@ describe('Keyboard', () => {
 	// create an event object for each key to test
 	const EVENTS: { [name: string]: () => JQueryEventObject } = {};
 	angular.forEach(KEYS, (code: number, key: MockKeyboardKeys) => {
-		EVENTS[key] = () => $.Event('keydown', { keyCode: code });
+		// @ts-ignore
+		EVENTS[key] = () => $.Event('keydown', {keyCode: code});
 	});
 
 	/**
@@ -42,7 +42,7 @@ describe('Keyboard', () => {
 		let $input: ng.IAugmentedJQuery;
 
 		beforeEach(() => {
-			$input = test.buildTemplate('input', { keyboard: 'true' });
+			$input = test.buildTemplate('input', {keyboard: 'true'});
 		});
 
 		// prevent default event
@@ -65,10 +65,10 @@ describe('Keyboard', () => {
 	describe('picker open/close', () => {
 		let $input: ng.IAugmentedJQuery;
 
-		const isOpen = () => test.getPicker($input).is(':visible');
+		const isOpen = () => test.getPicker($input).css('display');
 
 		beforeEach(inject(($rootScope) => {
-			$input = test.buildTemplate('input', { keyboard: 'true' });
+			$input = test.buildTemplate('input', {keyboard: 'true'});
 		}));
 
 		// close picker on pressing ESC
@@ -78,7 +78,7 @@ describe('Keyboard', () => {
 			// press ESC to close the picker (without clicking on the input first)
 			test.trigger($input, EVENTS['escape']());
 			// check if the picker is closed
-			expect(isOpen()).toBe(false);
+			expect(isOpen()).toBe('');
 		});
 
 		// open picker after pressing UP or DOWN key
@@ -89,7 +89,7 @@ describe('Keyboard', () => {
 				// send key to be tested
 				test.trigger($input, EVENTS[key]());
 				// check picker opening
-				expect(isOpen()).toBe(true);
+				expect(isOpen()).not.toBe('none');
 			});
 		});
 	});
@@ -102,7 +102,13 @@ describe('Keyboard', () => {
 		let previousSettings: IProviderOptions;
 
 		const pickerViews = ['decade', 'year', 'month', 'day', 'hour', 'minute'];
-		const commonOpts = { keyboard: 'true', ngModel: 'date', format: 'YYYY-MM-DD HH:mm:ss', class: 'input-picker', locale: locale };
+		const commonOpts = {
+			keyboard: 'true',
+			ngModel: 'date',
+			format: 'YYYY-MM-DD HH:mm:ss',
+			class: 'input-picker',
+			locale: locale
+		};
 		const getHighlightedText = ($element: ng.IAugmentedJQuery) => test.getPicker($element).find('td.highlighted').text();
 
 		// get formats from momentPickerProvider
@@ -110,12 +116,12 @@ describe('Keyboard', () => {
 			$scope = $rootScope.$new();
 			$scope['date'] = date;
 			// get provider options
-			previousSettings  = momentPicker;
+			previousSettings = momentPicker;
 			formats['decade'] = momentPicker.yearsFormat;
-			formats['year']   = momentPicker.monthsFormat;
-			formats['month']  = momentPicker.daysFormat;
-			formats['day']    = momentPicker.hoursFormat;
-			formats['hour']   = momentPicker.minutesFormat || moment.localeData(locale).longDateFormat('LT').replace(/[aA]/, '').trim();
+			formats['year'] = momentPicker.monthsFormat;
+			formats['month'] = momentPicker.daysFormat;
+			formats['day'] = momentPicker.hoursFormat;
+			formats['hour'] = momentPicker.minutesFormat || moment.localeData(locale).longDateFormat('LT').replace(/[aA]/, '').trim();
 			formats['minute'] = momentPicker.secondsFormat;
 			// set steps on HourView
 			momentPicker.minutesStep = 1;
@@ -128,16 +134,16 @@ describe('Keyboard', () => {
 		}));
 
 		pickerViews.forEach((view: ViewString, index: number) => {
-			const viewPrecision  = <moment.unitOfTime.DurationConstructor>(index === pickerViews.length - 1 ? 'seconds' : pickerViews[index + 1]);
+			const viewPrecision = <moment.unitOfTime.DurationConstructor>(index === pickerViews.length - 1 ? 'seconds' : pickerViews[index + 1]);
 			const viewMultiplier = view == 'decade' ? 10 : 1;
-			const itemsPerLine   = { decade: 4, year: 4, month: 7, day: 4, hour: 4, minute: 6 }[view];
-			const keysOperations = { up: 'subtract', down: 'add', left: 'subtract', right: 'add' };
+			const itemsPerLine = {decade: 4, year: 4, month: 7, day: 4, hour: 4, minute: 6}[view];
+			const keysOperations = {up: 'subtract', down: 'add', left: 'subtract', right: 'add'};
 
 			// highlight on open
 			it('should highlight the selected ' + view + ' on picker open', () => {
-				let options = angular.extend({ startView: view }, commonOpts),
-					$input  = test.buildTemplate('input', options, undefined, $scope);
-				
+				let options = angular.extend({startView: view}, commonOpts),
+					$input = test.buildTemplate('input', options, undefined, $scope);
+
 				expect(getHighlightedText($input)).toBe(date.format(formats[view]));
 			});
 
@@ -148,10 +154,10 @@ describe('Keyboard', () => {
 					datesToShift + ' ' + viewPrecision + (datesToShift != 1 ? 's' : '') + ' after pressing ' + key.toUpperCase() + ' key';
 
 				it(title, () => {
-					let options   = angular.extend({ startView: view }, commonOpts),
-						$input    = test.buildTemplate('input', options, undefined, $scope),
+					let options = angular.extend({startView: view}, commonOpts),
+						$input = test.buildTemplate('input', options, undefined, $scope),
 						finalDate = date.clone()[operation](datesToShift, viewPrecision);
-					
+
 					sendKey($input, key);
 					expect(getHighlightedText($input)).toBe(finalDate.format(formats[view]));
 				});

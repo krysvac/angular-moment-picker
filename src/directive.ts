@@ -197,6 +197,7 @@ export default class Directive implements ng.IDirective {
 				},
 				keydown: (e) => {
 					let view: IView = $scope.views[$scope.view.selected],
+						// @ts-ignore
 						precision   = $scope.views.precisions[$scope.view.selected].replace('date', 'day'),
 						singleUnit  = this.provider[precision + 'sStep'] || 1,
 						operation   = [KEYS.up, KEYS.left].indexOf(e.keyCode) >= 0 ? 'subtract' : 'add',
@@ -278,7 +279,7 @@ export default class Directive implements ng.IDirective {
 					let nextView = $scope.views.all.indexOf(view),
 						minView  = $scope.views.all.indexOf($scope.minView),
 						maxView  = $scope.views.all.indexOf($scope.maxView);
-					
+
 					const update = () => {
 						setValue($scope.view.moment, $scope, $ctrl, $attrs);
 						$scope.view.update();
@@ -295,7 +296,9 @@ export default class Directive implements ng.IDirective {
 
 			// creation
 			$element.prepend($transElement);
+			// @ts-ignore
 			$scope.picker = angular.element($element[0].querySelectorAll('.moment-picker'));
+			// @ts-ignore
 			$scope.container = angular.element($scope.picker[0].querySelectorAll('.moment-picker-container'));
 			$scope.input = $element[0].tagName.toLowerCase() != 'input' && $element[0].querySelectorAll('input').length > 0
 				? angular.element($element[0].querySelectorAll('input'))
@@ -431,6 +434,7 @@ export default class Directive implements ng.IDirective {
 			$scope.input
 				.on('focus click touchstart', () => $scope.$evalAsync($scope.view.open))
 				.on('blur',        			  () => $scope.$evalAsync($scope.view.close))
+				// @ts-ignore
 				.on('keydown',     			  (e) => { if ($scope.keyboard) $scope.view.keydown(e); });
 			$element.on('click touchstart', () => focusInput());
 			$scope.container.on('mousedown', (e: JQueryEventObject) => focusInput(e));

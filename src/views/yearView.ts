@@ -36,7 +36,8 @@ class YearView implements IView {
 			month.add(1, 'months');
 		});
 		// return title
-		return this.$scope.view.moment.format('YYYY');
+		let localeToUse = this.$scope.locale;
+		return this.$scope.view.moment.locale(localeToUse).format('YYYY');
 	}
 
 	public set(month: IViewItem): void {

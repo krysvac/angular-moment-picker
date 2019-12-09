@@ -6,7 +6,7 @@ let $compile, $timeout, $rootScope;
 export const bootstrap = (): any => { // tslint:disable-line:no-any
 	// load the moment-picker module, which contains the directive
 	beforeEach(angular.mock.module('moment-picker'));
-	
+
 	// store references to $rootScope and $compile
 	// so they are available to all tests in this describe block
 	beforeEach(inject((
@@ -34,10 +34,11 @@ export const buildTemplate = (tag: string, options?: any, content?: any, $scope?
 	if (!options.momentPicker) options.momentPicker = 'mpTestFormattedString';
 	if (tag === 'input' && !options.ngModel) options.ngModel = 'mpTestMomentObject';
 	angular.forEach(options, (value, name) => {
-		let valueStr = name;
+		let name2 = '' + name;
+		let valueStr: string = name2;
 		if (typeof value === 'string') valueStr = value;
 		else $scope[name] = value;
-		template += ' ' + name.replace(/([A-Z])/g, '-$1').toLowerCase() + '="' + valueStr + '"';
+		template += ' ' + name2.replace(/([A-Z])/g, '-$1').toLowerCase() + '="' + valueStr + '"';
 	});
 	// close template
 	template += tag === 'input' ? '>' : '></div>';
