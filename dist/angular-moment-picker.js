@@ -1,4 +1,4 @@
-/*! Angular Moment Picker - v0.10.3 - http://indrimuska.github.io/angular-moment-picker - (c) 2015 Indri Muska - MIT */
+/*! Angular Moment Picker - v0.10.4 - http://indrimuska.github.io/angular-moment-picker - (c) 2015 Indri Muska - MIT */
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -1061,7 +1061,8 @@ var MonthView = /** @class */ (function () {
     }
     MonthView.prototype.render = function () {
         var _this = this;
-        var month = this.$scope.view.moment.month(), day = this.$scope.view.moment.clone().startOf('month').startOf('week').hour(12), rows = {}, firstWeek = day.week(), lastWeek = firstWeek + 5;
+        var localeToUse = this.$scope.locale;
+        var month = this.$scope.view.moment.month(), day = this.$scope.view.moment.locale(localeToUse).clone().startOf('month').startOf('week').hour(12), rows = {}, firstWeek = day.week(), lastWeek = firstWeek + 5;
         this.rows = [];
         for (var week = firstWeek; week <= lastWeek; week++)
             rows[week] = Array.apply(null, Array(this.perLine)).map(function () {
@@ -1087,7 +1088,6 @@ var MonthView = /** @class */ (function () {
         // render headers
         this.headers = moment.weekdays().map(function (d, i) { return moment().locale(_this.$scope.locale).startOf('week').add(i, 'day').format('dd'); });
         // return title
-        var localeToUse = this.$scope.locale;
         return this.$scope.view.moment.locale(localeToUse).format('MMMM YYYY');
     };
     MonthView.prototype.set = function (day) {

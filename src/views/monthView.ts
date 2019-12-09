@@ -3,6 +3,7 @@ import * as moment from 'moment';
 import { IView, IViewItem, IDirectiveScopeInternal, IModelController } from '../definitions';
 import { IProviderOptions } from '../provider';
 import { isValidMoment } from '../utility';
+import { locale } from 'moment';
 
 export default class MonthView implements IView {
 	public perLine: number = moment.weekdays().length;
@@ -15,8 +16,9 @@ export default class MonthView implements IView {
 		private provider: IProviderOptions) { }
 
 	public render(): string {
+		let localeToUse = this.$scope.locale;
 		let month: number                         = this.$scope.view.moment.month(),
-			day: moment.Moment                    = this.$scope.view.moment.clone().startOf('month').startOf('week').hour(12),
+			day: moment.Moment                    = this.$scope.view.moment.locale(localeToUse).clone().startOf('month').startOf('week').hour(12),
 			rows: { [week: number]: IViewItem[] } = {},
 			firstWeek: number                     = day.week(),
 			lastWeek: number                      = firstWeek + 5;
@@ -46,10 +48,9 @@ export default class MonthView implements IView {
 		// render headers
 		this.headers = moment.weekdays().map((d: string, i: number) => moment().locale(this.$scope.locale).startOf('week').add(i, 'day').format('dd'));
 		// return title
-		let localeToUse = this.$scope.locale;
 		return this.$scope.view.moment.locale(localeToUse).format('MMMM YYYY');
 	}
-	
+
 	public set(day: IViewItem): void {
 		if (!day.selectable) return;
 		this.$scope.view.moment.year(day.year).month(day.month).date(day.date);
